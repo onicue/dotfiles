@@ -1,3 +1,4 @@
 [submodule "nvim"]
-	path = nvim
-	url = git@github.com:onicue/nvim.git
+  path = nvim
+  url = git@github.com:onicue/nvim.git
+  branch = main
