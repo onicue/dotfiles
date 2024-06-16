@@ -1,3 +1,7 @@
-mkdir ~/.config/tmux/plugins/
-git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
-prefix + I
+**Install tmp**
+```sh
+  mkdir ~/.config/tmux/plugins/
+  git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm
+```
+
+**Install plugins**: prefix + I
