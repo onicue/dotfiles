@@ -16,7 +16,6 @@ set-option -g pane-border-style fg=colour237 #bg1
 set-option -g message-style bg=colour239,fg=colour223 # bg=bg2, fg=fg1
 set-option -g message-command-style bg=colour239,fg=colour223 # bg=fg3, fg=bg1
 
-# clock
 set-window-option -g clock-mode-colour colour109 #blue
 set-window-option -g window-status-bell-style bg=colour167,fg=colour235 # bg=red, fg=bg
 
@@ -24,7 +23,7 @@ set-option -g display-panes-active-colour colour250 #fg2
 set-option -g display-panes-colour colour237 #bg1
 
 set-option -g status-left "#[bg=colour241,fg=colour248] #S #[bg=colour237,fg=colour241,nobold,noitalics,nounderscore]"
-set-option -g status-right " #( ~/.config/tmux/additional_info.sh)#[bg=colour237,fg=colour239 nobold, nounderscore, noitalics]#[bg=colour239,fg=colour246] %Y-%m-%d  %H:%M #[bg=colour239,fg=colour248,nobold,noitalics,nounderscore]#[bg=colour248,fg=colour237] #h "
+set-option -g status-right " #( ~/.config/tmux/theme/additional_info.sh)#[bg=colour237,fg=colour239 nobold, nounderscore, noitalics]#[bg=colour239,fg=colour246] %Y-%m-%d  %H:%M #[bg=colour239,fg=colour248,nobold,noitalics,nounderscore]#[bg=colour248,fg=colour237] #h "
 
 set-window-option -g window-status-current-format "#[bg=colour167,fg=colour237,nobold,noitalics,nounderscore]#[bg=colour167,fg=colour237] #I #[bg=colour167,fg=colour237,bold] #W#{?window_zoomed_flag,*Z,} #[bg=colour237,fg=colour167,nobold,noitalics,nounderscore]"
 set-window-option -g window-status-format "#[bg=colour239,fg=colour237,noitalics]#[bg=colour239,fg=colour223] #I #[bg=colour239,fg=colour223] #W #[bg=colour237,fg=colour239,noitalics]"

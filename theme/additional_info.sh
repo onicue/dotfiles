@@ -1,5 +1,3 @@
-#must be 4 elements or change logic in get_battery_index_by_capacity
-
 battery_icons=("󰋑" "󰋔" "󰛞" "󰋕")
 battery_icon_colors=("color196" "color198" "color204" "color202")
 battery_charging_icon="󰻹"
@@ -51,7 +49,7 @@ function battery_meter() {
 
 
 function main(){
-  battery_meter
+  # battery_meter
   ip_address
 }
 

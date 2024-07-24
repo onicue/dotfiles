@@ -1,0 +1,68 @@
+#!/bin/bash
+
+CURRENT_COLOR='\033[32m'
+RESET='\033[0m'
+
+select_file(){
+  local tmp=$1
+  local commnad_dir="$HOME/.config/tmux/scripts/tools/tex_command_picker"
+  echo "10" > $tmp #output hidden files
+  local selected_file=$( $commnad_dir ${tmp} | fzf --tmux --layout=reverse\
+    --bind "ctrl-h:reload($commnad_dir ${tmp} h)" \
+    --bind "ctrl-f:reload($commnad_dir ${tmp} f)")
+
+  if [ -n "$selected_file" ]; then
+    if [ -d "$selected_file" ]; then
+      cd "$selected_file"
+      selected_file="$(select_file $tmp)"
+    fi
+      echo $(realpath $selected_file)
+  fi
+}
+
+get_pane(){
+  current_pane=$(tmux display-message -p '#S:#I.#P')
+  panes_list=$(tmux list-panes -a -F "#S:#I.#P #{pane_title} [#{pane_current_command}] #{?#{==:#S:#I.#P,$current_pane},${CURRENT_COLOR}current${RESET},}")
+
+  sorted_panes_list=$(echo "$panes_list" | grep "$current_pane"; echo "$panes_list" | grep -v "$current_pane")
+
+  echo $(echo -e "$sorted_panes_list" \
+    | fzf --tmux --ansi --prompt='Select pane: ' --preview 'tmux capture-pane -e -p -t $(echo {} | awk "{print \$1}")' --bind='ctrl-p:toggle-preview' \
+    | awk '{print $1}')
+}
+
+open_in_pane(){
+  pane_id=$1
+  file=$2
+  file_type=$(file --mime-type -b $file)
+
+  case $file_type in
+    text/*)
+      pane_content=$(tmux list-panes -t $pane_id -F "#{pane_current_command}")
+      echo "$pane_content"
+      if echo $pane_content | grep -q 'nvim'; then
+        tmux send-keys -t $pane_id ":e $file" C-m
+      else
+        tmux send-keys -t $pane_id "nvim $file" C-m
+      fi
+      ;;
+    *)
+        echo "Unsupported file type: $file_type"
+        ;;
+  esac
+}
+
+main(){
+  local tmp=$(mktemp)
+  local output=$(select_file $tmp)
+  rm -f $tmp
+
+  if [ -n "$output" ]; then
+    pane_id=$(get_pane)
+    if [ -n "$pane_id" ]; then
+      open_in_pane $pane_id $output
+    fi
+  fi
+}
+
+main

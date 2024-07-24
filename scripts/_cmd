@@ -1,0 +1,24 @@
+#!/bin/bash
+
+export RUN_IN_POPUP="true"
+
+run_command() {
+    local cmd="$1"
+    case "$cmd" in
+        ls*|grep*|egrep*|fgrep*)
+            eval "$cmd --color=always"
+            ;;
+        *)
+            eval "$cmd"
+            ;;
+    esac
+}
+
+export PATH=$PATH:$HOME/.config/tmux/scripts
+
+read -e -p $'\033[0;32mInput command: \033[0m' cmd
+
+run_command "$cmd"
+
+echo -e "\n\033[1;33mPress any key to exit...\033[0m"
+read -n 1
