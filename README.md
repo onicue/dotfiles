@@ -1,4 +1,5 @@
-`thene = [waterfall](https://github.com/crambaud/waterfall)`
+· `theme` [waterfall](https://github.com/crambaud/waterfall)
+· `config` [Betterfox](https://github.com/yokoffing/BetterFox)
 
 ## Extensions
 - [Dark Reader](https://addons.mozilla.org/en-US/firefox/addon/darkreader/)
