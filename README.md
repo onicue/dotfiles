@@ -1,4 +1,4 @@
-## Extentions
+## Extensions
 - [Dark Reader](https://addons.mozilla.org/en-US/firefox/addon/darkreader/)
 - [Vimium](https://addons.mozilla.org/en-US/firefox/addon/vimium-ff/)
 - [uBlock](https://addons.mozilla.org/en-US/firefox/addon/ublock-origin/)
