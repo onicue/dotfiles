@@ -2,25 +2,37 @@
 
 CURRENT_COLOR='\033[32m'
 RESET='\033[0m'
+TMP_FILE_NAME="/tmp/tmux_tex_tmp"
+SINGLE_TEMP_FILE=true
+DEFAULT_COMMANDS="00" # hide hidden files and don't use ls command
 
 select_file(){
   local tmp=$1
-  local commnad_dir="$HOME/.config/tmux/scripts/tools/tex_command_picker"
-  echo "10" > $tmp #output hidden files
-  local selected_file=$( $commnad_dir ${tmp} | fzf --tmux --layout=reverse\
-    --bind "ctrl-h:reload($commnad_dir ${tmp} h)" \
-    --bind "ctrl-f:reload($commnad_dir ${tmp} f)")
+  local command_dir="$HOME/.config/tmux/scripts/tools/tex_command_picker"
+
+  if [ ! -x "$command_dir" ]; then
+    echo "Error: Command directory $command_dir does not exist or is not executable."
+    exit 1
+  fi
+
+  local selected_file=$($command_dir "${tmp}" | fzf --tmux --layout=reverse \
+    --bind "ctrl-h:reload($command_dir ${tmp} h)" \
+    --bind "ctrl-f:reload($command_dir ${tmp} f)")
 
   if [ -n "$selected_file" ]; then
     if [ -d "$selected_file" ]; then
-      cd "$selected_file"
-      selected_file="$(select_file $tmp)"
+      cd "$selected_file" || exit
+      selected_file=$(select_file "$tmp")
     fi
-      echo $(realpath $selected_file)
+    echo "$(realpath "$selected_file")"
   fi
 }
 
 get_pane(){
+  local current_pane
+  local panes_list
+  local sorted_panes_list
+
   current_pane=$(tmux display-message -p '#S:#I.#P')
   panes_list=$(tmux list-panes -a -F "#S:#I.#P #{pane_title} [#{pane_current_command}] #{?#{==:#S:#I.#P,$current_pane},${CURRENT_COLOR}current${RESET},}")
 
@@ -32,35 +44,52 @@ get_pane(){
 }
 
 open_in_pane(){
-  pane_id=$1
-  file=$2
-  file_type=$(file --mime-type -b $file)
+  local pane_id=$1
+  local file=$2
+  local file_type
+
+  file_type=$(file --mime-type -b "$file")
 
   case $file_type in
     text/*)
-      pane_content=$(tmux list-panes -t $pane_id -F "#{pane_current_command}")
-      echo "$pane_content"
-      if echo $pane_content | grep -q 'nvim'; then
-        tmux send-keys -t $pane_id ":e $file" C-m
+      local pane_content
+      pane_content=$(tmux list-panes -t "$pane_id" -F "#{pane_current_command}")
+      if echo "$pane_content" | grep -q 'nvim'; then
+        tmux send-keys -t "$pane_id" ":e $file" C-m
       else
-        tmux send-keys -t $pane_id "nvim $file" C-m
+        tmux send-keys -t "$pane_id" "nvim $file" C-m
       fi
       ;;
     *)
-        echo "Unsupported file type: $file_type"
-        ;;
+      echo "Unsupported file type: $file_type"
+      ;;
   esac
 }
 
 main(){
-  local tmp=$(mktemp)
-  local output=$(select_file $tmp)
-  rm -f $tmp
+  local tmp
+  local output
+
+  if $SINGLE_TEMP_FILE; then
+    if [ ! -f "$TMP_FILE_NAME" ]; then
+      echo "${DEFAULT_COMMANDS}" > "$TMP_FILE_NAME"
+    fi
+    tmp=$TMP_FILE_NAME
+  else
+    tmp=$(mktemp)
+  fi
+
+  output=$(select_file "$tmp")
+
+  if ! $SINGLE_TEMP_FILE; then
+    rm -f "$tmp"
+  fi
 
   if [ -n "$output" ]; then
+    local pane_id
     pane_id=$(get_pane)
     if [ -n "$pane_id" ]; then
-      open_in_pane $pane_id $output
+      open_in_pane "$pane_id" "$output"
     fi
   fi
 }
