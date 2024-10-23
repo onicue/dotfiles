@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# export RUN_IN_POPUP="true"
+
+if ! command -v trans 2>&1 >/dev/null
+then
+    echo "echo could not be found"
+    exit 1
+fi
+
+trans -I
