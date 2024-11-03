@@ -1,0 +1,287 @@
+{
+  "layer": "top",
+  "position": "right",
+  "reload_style_on_change": true,
+  "margin": "15 0 15 0",
+  "widht": 25,
+  "spacing": 1,
+
+  "modules-left": [
+    "clock",
+    "hyprland/workspaces",
+    "hyprland/language",
+    "group/info"
+  ],
+  "modules-center": [
+    "hyprland/window"
+  ],
+  "modules-right": [
+    "group/gnet",
+    "group/audio",
+    "tray",
+    "group/power"
+  ],
+
+  "clock": {
+    "format": "{:%I\n<span overline=\"single\">%M</span>}",
+    "interval": 60,
+    "tooltip-format": "<tt><small>{calendar}</small></tt>",
+    "calendar": {
+      "mode": "month",
+      "mode-mon-col": 3,
+      "weeks-pos": "right",
+      "on-scroll": 1,
+      "on-click-right": "mode",
+      "format": {
+        "today": "<span color='#a6e3a1'><b><u>{}</u></b></span>"
+      }
+    }
+  },
+
+  "hyprland/language": {
+    "format": "{}",
+    "format-en": "en",
+    "format-ru": "ru"
+  },
+
+  "group/info": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 500,
+      "children-class": "hardware",
+      "transition-left-to-right": false
+    },
+    "modules": [
+      "custom/dmark",
+      "group/gcpu",
+      "memory",
+      "disk"
+    ]
+  },
+
+  "custom/dmark": {
+    "format": "",
+    "tooltip": false
+  },
+
+  "group/gcpu": {
+    "orientation": "inherit",
+    "modules": [
+      "custom/cpu-icon",
+      "custom/cputemp",
+      "cpu"
+    ]
+  },
+
+  "custom/cpu-icon": {
+    "format": "",
+    "tooltip": false
+  },
+  "custom/cputemp": {
+    "format": "",
+    "exec": "~/.config/waybar/bin/cputemp",
+    "interval": 10,
+    "return-type": "json"
+  },
+  "cpu": {
+    "format": "<b>{usage}%</b>",
+    "on-click": "foot btop"
+  },
+  "memory": {
+    "format": "<b>  \n{:2}%</b>"
+  },
+  "disk": {
+    "interval": 600,
+    "format": "<b>  \n{percentage_used}%</b>",
+    "path": "/"
+  },
+
+  "hyprland/window": {
+    "rotate": 270,
+    "format": "{}",
+    "rewrite": {
+      "(.*) — Mozilla Firefox": " $1"
+        //"(.*) - fish": "> [$1]"
+    },
+    "separate-outputs": true
+  },
+
+  "hyprland/workspaces": {
+    "format": "<span font='16px'>{icon}</span>",
+    "on-click": "activate",
+    "all-outputs": true,
+    "format-icons": {
+       "1": "一",
+       "2": "二",
+       "3": "三",
+       "4": "四",
+       "5": "五",
+       "6": "六",
+       "7": "七",
+       "8": "八",
+       "9": "九",
+       "10": "十"
+    }
+  },
+
+  "group/gnet": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 500,
+      "transition-left-to-right": true
+    },
+    "modules": [
+      "network",
+      "network#speed"
+    ]
+  },
+
+  "network": {
+    "format": "{icon}",
+    "format-icons": {
+      "wifi": [
+        "󰖩"
+      ],
+      "ethernet": [
+        "󰈀"
+      ],
+      "disconnected": [
+        "󰖪"
+      ]
+    },
+    "format-wifi": "󰖩",
+    "format-ethernet": "󰈀",
+    "format-disconnected": "󰖪",
+    "format-linked": "󰈁",
+    "tooltip": false,
+    "on-click": "pgrep -x rofi &>/dev/null && notify-send rofi || networkmanager_dmenu"
+  },
+
+  "network#speed": {
+    "format": " {bandwidthDownBits} ",
+    "rotate": 90,
+    "interval": 5,
+    "tooltip-format": "{ipaddr}",
+    "tooltip-format-wifi": "{essid} ({signalStrength}%)   \n{ipaddr} | {frequency} MHz{icon} ",
+    "tooltip-format-ethernet": "{ifname} 󰈀 \n{ipaddr} | {frequency} MHz{icon} ",
+    "tooltip-format-disconnected": "Not Connected to any type of Network",
+    "tooltip": true,
+    "on-click": "pgrep -x rofi &>/dev/null && notify-send rofi || networkmanager_dmenu"
+  },
+
+  "group/audio": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 500,
+      "transition-left-to-right": false
+    },
+    "modules": [
+      "pulseaudio",
+      "pulseaudio#mic",
+      "pulseaudio/slider"
+    ]
+  },
+
+  "pulseaudio": {
+    "format": "",
+    "tooltip": false,
+    "format-bluetooth": "{icon}",
+    "tooltip-format": "{volume}% {icon} | {desc}",
+    "format-muted": "",
+    "format-icons": {
+      "headphones": "󰋌",
+      "handsfree": "󰋌",
+      "headset": "󰋎",
+      "phone": "",
+      "portable": "",
+      "car": " ",
+      "default": [
+        "󰕿",
+        "󰖀",
+        "󰕾"
+      ]
+    },
+    "on-click": "volume mute",
+    "on-click-middle": "pavucontrol",
+    "on-scroll-up": "pactl set-sink-volume @DEFAULT_SINK@ +5%",
+    "on-scroll-down": "pactl set-sink-volume @DEFAULT_SINK@ -5%",
+    "smooth-scrolling-threshold": 1
+  },
+  "pulseaudio#mic": {
+    "format": "{format_source}",
+    "format-source": "",
+    "format-source-muted": "",
+    "tooltip-format": "{volume}% {format_source} ",
+    "on-click": "pactl set-source-mute 0 toggle",
+    "on-scroll-down": "pactl set-source-volume 0 -1%",
+    "on-scroll-up": "pactl set-source-volume 0 +1%"
+  },
+  "pulseaudio/slider": {
+    "min": 0,
+    "max": 140,
+    "orientation": "vertical"
+  },
+
+
+  "group/brightness": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 500,
+      "transition-left-to-right": false
+    },
+    "modules": [
+      "backlight",
+      "backlight/slider"
+    ]
+  },
+
+  "tray": {
+    "icon-size": 18,
+    "spacing": 10
+  },
+
+  "group/power": {
+    "orientation": "inherit",
+    "drawer": {
+      "transition-duration": 500,
+      "transition-left-to-right": false
+    },
+    "modules": [
+      "battery"
+      //"power-profiles-daemon"
+    ]
+  },
+
+  "battery": {
+    "rotate": 270,
+    "states": {
+      "good": 95,
+      "warning": 30,
+      "critical": 15
+    },
+    "format": "{icon}",
+    "format-charging": "<span color='#EEDC82'><b>{icon}</b></span>",
+    "format-full": "<span color='#82A55F'><b>{icon}</b></span>",
+    "format-icons": [
+      "󰁻",
+      "󰁼",
+      "󰁾",
+      "󰂀",
+      "󰂂",
+      "󰁹"
+    ],
+    "tooltip-format": "{timeTo} {capacity} % | {power} W"
+  }
+
+  //"power-profiles-daemon": {
+  //  "format": "{icon}",
+  //  "tooltip-format": "Power profile: {profile}\nDriver: {driver}",
+  //  "tooltip": true,
+  //  "format-icons": {
+  //    "default": "",
+  //    "performance": "<span color='#B37F34'><small></small></span>",
+  //    "balanced": "<span><small> </small></span>",
+  //    "power-saver": "<span color='#a6e3a1'><small></small></span>"
+  //  }
+  //}
+}
